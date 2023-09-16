@@ -6,6 +6,7 @@ from django.core.paginator import Paginator
 from .forms import SigUpForm, SignInForm, FeedBackForm
 from django.contrib.auth import login, authenticate
 from django.http import HttpResponseRedirect
+from django.db.models import Q
 
 from django.http import HttpResponse
 from django.core.mail import send_mail, BadHeaderError
@@ -99,4 +100,19 @@ class SuccessView(View):
     def get(self, request, *args, **kwargs):
         return render(request, 'app/success.html', context={
             'title': 'Спасибо'
+        })
+
+class SearchResultsView(View):
+    def get(self, request, *args, **kwargs):
+        query = request.GET.get('q')
+        results = ''
+        if query:
+            results = Post.objects.filter( # type: ignore
+                Q(h1__iregex=query) | Q(content__iregex=query)
+            )
+
+        return render(request, 'app/search.html', context={
+            'title': 'Поиск',
+            'results': results,
+            'count': len(results),
         })
