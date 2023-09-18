@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'app.apps.AppConfig',
     'ckeditor',
     'ckeditor_uploader',
+    'taggit',
 ]
 
 MIDDLEWARE = [
